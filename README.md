@@ -25,20 +25,21 @@ Açılan claude_desktop_config dosyasını aşağıdaki gibi düzenleyin:
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\Users\\emirc\\OneDrive\\Masaüstü\\BüyükProje\\Auto", -------> BU KISMI REPODA BULUNAN DOSYALARIN OLDUĞU YOL İLE DEĞİŞTİRMELİSİNİZ.
+        "C:\\Users\\emirc\\OneDrive\\Masaüstü\\BüyükProje\\Auto", 
         "run",
         "main.py"
       ]
     }
   }
 }
-![image](https://github.com/user-attachments/assets/54ae316e-c811-4be2-acdd-a32c411cc6ad)
+Önemli -> "C:\\Users\\emirc\\OneDrive\\Masaüstü\\BüyükProje\\Auto", -------> BU KISMI REPODA BULUNAN DOSYALARIN OLDUĞU YOL İLE DEĞİŞTİRMELİSİNİZ.
 
+![image](https://github.com/user-attachments/assets/54ae316e-c811-4be2-acdd-a32c411cc6ad)
 
 3. CSV Dosyasını Ekleyin
 Repodaki data klasörünün içine analiz etmek istediğiniz .csv dosyasını ekleyin.
-![image](https://github.com/user-attachments/assets/16c27313-391f-4419-a278-ff6dafc9d22e)
 
+![image](https://github.com/user-attachments/assets/16c27313-391f-4419-a278-ff6dafc9d22e)
 
 4. read_csv_file.py Yolunu Güncelleyin
 utils/read_csv_file.py dosyasındaki path değişkenini, kendi sisteminizdeki data klasörünün tam yolu ile değiştirin.
