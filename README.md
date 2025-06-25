@@ -9,11 +9,11 @@ Bu sistem, veriyi okuma, düzenleme, modellemeye hazırlama ve modelleri test et
 -Kolay yapılandırma ile hızlı entegrasyon
 
 Nasıl Kullanılır?
-1. Claude Desktop Uygulamasını İndirin
+1. Claude Desktop Uygulamasını İndirin:
 Öncelikle Claude Desktop uygulamasını sisteminize indirin ve yükleyin.
 ![image](https://github.com/user-attachments/assets/fa226b7a-4989-47ab-a5da-88ac9356dfd7)
 
-2. Claude Ayarlarını Yapılandırın
+2. Claude Ayarlarını Yapılandırın:
 Claude Desktop'u açın:
 File -> Settings -> Developer -> Edit Config
 ![image](https://github.com/user-attachments/assets/63397750-eace-48e2-aff0-63d041585afd)
