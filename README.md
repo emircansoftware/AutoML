@@ -88,7 +88,7 @@ Auto/
 
    ```bash
    git clone https://github.com/emircansoftware/MCP_Server_DataScience.git
-   cd auto-ml
+   cd MCP_Server_DataScience
    ```
 
 2. **Install dependencies**
