@@ -4,26 +4,50 @@ import numpy as np
 
 
 def preprocessing(file_name: str = "",target_column: str = ""):
-    print("target_column:", target_column, type(target_column))
     df=read_csv(file_name)
     null_summary = df.isnull().sum()
-    print("Null değer sayısı:\n", null_summary)
+    
+    # İşlem bilgilerini saklamak için dictionary
+    process_info = {
+        'initial_rows': len(df),
+        'null_summary': null_summary.to_dict(),
+        'warnings': [],
+        'removed_columns': [],
+        'removed_rows': 0
+    }
 
     row_count = len(df)
-    # Target column'daki null oranını kontrol et
-    if df[target_column].isnull().sum() / row_count > 0.5:
-        raise ValueError(f"Target column '{target_column}' null oranı %50'den fazla! Model eğitilemez.")
+    # Numeric sütunlar arasında 8'den az unique değere sahip olanların tipini 'category' olarak değiştir
+    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+    low_unique_cols = [col for col in numeric_cols if df[col].nunique() < 8]
+    for col in low_unique_cols:
+        df[col] = df[col].astype('category')
+
+    # Target column'daki null değerleri kontrol et ve güvenli şekilde temizle
+    target_null_count = df[target_column].isnull().sum()
+    if target_null_count > 0:
+        if target_null_count / len(df) > 0.1:  # %10'dan fazla null varsa uyarı ver
+            process_info['warnings'].append(f"Target column'da %{(target_null_count/len(df)*100):.1f} oranında null değer var!")
+        
+        # Null değerleri olan satırları sil
+        initial_len = len(df)
+        df = df.dropna(subset=[target_column])
+        process_info['removed_rows'] += initial_len - len(df)
+        
+        # Eğer çok az veri kaldıysa uyarı ver
+        if len(df) < 10:
+            process_info['warnings'].append("Çok az veri kaldı! Model eğitimi için yeterli veri olmayabilir.")
 
     high_null_cols = [col for col in df.columns if df[col].isnull().sum() / row_count > 0.5]
     if high_null_cols:
-        print(f"%50'den fazla null içeren sütunlar siliniyor: {high_null_cols}")
+        process_info['removed_columns'].extend(high_null_cols)
         df = df.drop(columns=high_null_cols)
 
     # Kategorik sütunlarda 8'den fazla benzersiz değer varsa sütun sil
     categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
     high_cardinality_cols = [col for col in categorical_cols if df[col].nunique() > 8]
     if high_cardinality_cols:
-        print(f"8'den fazla benzersiz değer içeren kategorik sütunlar siliniyor: {high_cardinality_cols}")
+        process_info['removed_columns'].extend(high_cardinality_cols)
         df = df.drop(columns=high_cardinality_cols)
 
     # Kategorik sütunlarda, değer oranı %5'ten az olan satırları sil
@@ -33,13 +57,14 @@ def preprocessing(file_name: str = "",target_column: str = ""):
         value_counts = df[col].value_counts(normalize=True)
         low_ratio_values = value_counts[value_counts < 0.1].index
         if not low_ratio_values.empty:
-            print(f"{col} sütununda %5'ten az orana sahip değerler siliniyor: {low_ratio_values}")
+            initial_len = len(df)
             df = df[~df[col].isin(low_ratio_values)]
+            process_info['removed_rows'] += initial_len - len(df)
 
     # ID gibi sıralı değerleri sil
     id_cols = [col for col in df.columns if df[col].nunique() == len(df)]
     if id_cols:
-        print(f"ID gibi sıralı değerler siliniyor: {id_cols}")
+        process_info['removed_columns'].extend(id_cols)
         df = df.drop(columns=id_cols)
 
     # Çok fazla outlier olan satırları sil
@@ -59,10 +84,9 @@ def preprocessing(file_name: str = "",target_column: str = ""):
 
         outlier_mask = (df[col] < extreme_lower) | (df[col] > extreme_upper)
         if outlier_mask.any():
-            print(f"{col} sütununda çok uç outlier olan satırlar siliniyor.")
+            initial_len = len(df)
             df = df[~outlier_mask]
-
-    df = df.dropna(subset=[target_column])
+            process_info['removed_rows'] += initial_len - len(df)
 
     # Null doldurma işlemleri
     for col in df.columns:
@@ -90,4 +114,8 @@ def preprocessing(file_name: str = "",target_column: str = ""):
                     # Outlier fazlaysa medyan ile doldur
                     median_val = col_data.median()
                     df[col] = df[col].fillna(median_val)
-    return df 
+    
+    process_info['final_rows'] = len(df)
+    process_info['final_columns'] = list(df.columns)
+    
+    return df, process_info 

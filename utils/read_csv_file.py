@@ -22,10 +22,8 @@ def read_csv(file_name: str = ""):
                 # Eğer sadece 1 sütun varsa ve içinde ; varsa, noktalı virgül ile tekrar dene
                 if len(df.columns) == 1 and ';' in str(df.iloc[0, 0]):
                     df = pd.read_csv(file_path, sep=';', encoding=encoding)
-                    print(f"{file_name} dosyası noktalı virgül (;) ile ayrılmış olarak okundu.")
                     return df
                 elif len(df.columns) > 1:
-                    print(f"{file_name} dosyası '{sep}' ayırıcı ve '{encoding}' encoding ile okundu.")
                     return df
             except UnicodeDecodeError:
                 continue  # Bu encoding ile okunamadı, diğerini dene
@@ -35,7 +33,6 @@ def read_csv(file_name: str = ""):
     # Hiçbiri çalışmazsa son bir deneme
     try:
         df = pd.read_csv(file_path, encoding='utf-8', errors='ignore')
-        print(f"{file_name} dosyası 'utf-8' encoding ile (hata karakterler yok sayılarak) okundu.")
         return df
     except Exception as e:
         raise ValueError(f"Dosya hiçbir encoding veya separator ile okunamadı. Hata: {e}")

@@ -16,10 +16,7 @@ def prepare_features(file_name: str = "",target_column: str = "",problem_type: s
     Problem türü regresyon ise y değerlerini log1p ile dönüştürür.
     Train-test split yapar ve ColumnTransformer'ı uygular.
     """
-    df=preprocessing(file_name,target_column)
-
-    print("Sütunlar:", df.columns.tolist())
-    print("target_column:", target_column, type(target_column))
+    df, process_info = preprocessing(file_name,target_column)
 
     # Numerik ve kategorik sütunları ayırt et
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
@@ -64,9 +61,6 @@ def prepare_features(file_name: str = "",target_column: str = "",problem_type: s
         df[target_column] = le.fit_transform(df[target_column])
     elif problem_type == 'regression':
         df[target_column] = np.log1p(df[target_column])
-
-
-    print("İşlemlerden sonraki df:",df.head())
 
     # Train-test split
     X = df.drop(columns=[target_column])
