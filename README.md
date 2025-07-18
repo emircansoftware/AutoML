@@ -95,7 +95,7 @@ Auto/
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/auto-ml.git
+   git clone https://github.com/emircansoftware/MCP_Server_DataScience.git
    cd auto-ml
    ```
 
