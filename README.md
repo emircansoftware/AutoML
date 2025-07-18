@@ -45,7 +45,7 @@ An intelligent automated machine learning platform that provides comprehensive d
 ## 📁 Project Structure
 
 ```
-Auto/
+MCP_Server_DataScience/
 ├── data/                   # Sample datasets
 │   ├── Ai.csv
 │   ├── Calories.csv
@@ -96,7 +96,7 @@ Auto/
 
    ```bash
    git clone https://github.com/emircansoftware/MCP_Server_DataScience.git
-   cd auto-ml
+   cd MCP_Server_DataScience
    ```
 
 2. **Install dependencies**
@@ -116,7 +116,7 @@ In `utils/read_csv_file.py`, update the `path` variable to match your own projec
 
 ```python
 # Example:
-path = r"C:\\YOUR\\PROJECT\\PATH\\Auto\\data"
+path = r"C:\\YOUR\\PROJECT\\PATH\\MCP_Server_DataScience\\data"
 ```
 
 ### 2. Claude Desktop Configuration
@@ -130,7 +130,7 @@ In Claude Desktop, add the following block to your `claude_desktop_config.json` 
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\YOUR\\PROJECT\\PATH\\Auto",
+        "C:\\YOUR\\PROJECT\\PATH\\MCP_Server_DataScience",
         "run",
         "main.py"
       ]
