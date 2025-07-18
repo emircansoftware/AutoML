@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "@modelcontextprotocol/inspector": "^0.15.0",
     "matplotlib": "^1.0.0",
     "seaborn": "^0.0.1-security"
+  },
+  "scripts": {
+    "mcp-server-everything": "uv run main.py"
   }
 }

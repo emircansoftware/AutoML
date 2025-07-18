@@ -25,7 +25,7 @@ def visualize_correlation_matrix_cat(file_name: str = ""):
         for num_col in numeric_cols:
             plt.figure(figsize=(10, 6))
             sns.boxplot(x=df[cat_col], y=df[num_col])
-            plt.title(f'{num_col} dağılımı - {cat_col} kategorilerine göre')
+            plt.title(f'{num_col} distribution - {cat_col} categories')
             plt.xlabel(cat_col)
             plt.ylabel(num_col)
             plt.show()
@@ -41,7 +41,7 @@ def visualize_correlation_matrix_final(file_name: str = "",target_column: str = 
     corr_matrix = df_encoded[numeric_cols+categorical_cols].corr()
     plt.figure(figsize=(10,8))
     sns.heatmap(corr_matrix,annot=True,cmap='coolwarm',center=0)
-    plt.title('Final Correlation Matrix (Encoded)')
+    plt.title('Final Correlation Matrix (Preprocessed)')
     plt.show()
 
 def visualize_outlier_detection(file_name: str = ""):

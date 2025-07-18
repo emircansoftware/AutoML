@@ -11,7 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 from catboost import CatBoostRegressor, CatBoostClassifier
 
-# Model tipine göre parametre grid'leri
+# Model type-specific parameter grids
 param_grids = {
     'RandomForestRegressor': {
         'n_estimators': [50, 100, 200],
@@ -113,10 +113,8 @@ param_grids = {
     }
 }
 
-def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_trials=30, scoring=None, random_state=42):
-    """
-    Optuna ile hiperparametre optimizasyonu yapar.
-    """
+def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_trials=3, scoring=None, random_state=42):
+    
     n_trials = int(n_trials)
     random_state = int(random_state)
     X_train, X_test, y_train, y_test = prepare_features(file_name, target_column, problem_type)
@@ -126,8 +124,8 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
     def objective(trial):
         if model_name == 'RandomForestRegressor':
             params = {
-                'n_estimators': trial.suggest_int('n_estimators', 50, 200),
-                'max_depth': trial.suggest_int('max_depth', 3, 20),
+                'n_estimators': trial.suggest_int('n_estimators', 100, 1000),
+                'max_depth': trial.suggest_int('max_depth', 5, 50),
                 'min_samples_split': trial.suggest_int('min_samples_split', 2, 10),
                 'max_features': trial.suggest_categorical('max_features', ['auto', 'sqrt', 'log2']),
                 'bootstrap': trial.suggest_categorical('bootstrap', [True, False]),
@@ -136,8 +134,8 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
             mdl = RandomForestRegressor(**params)
         elif model_name == 'RandomForestClassifier':
             params = {
-                'n_estimators': trial.suggest_int('n_estimators', 50, 200),
-                'max_depth': trial.suggest_int('max_depth', 3, 20),
+                'n_estimators': trial.suggest_int('n_estimators', 100, 1000),
+                'max_depth': trial.suggest_int('max_depth', 5, 50),
                 'min_samples_split': trial.suggest_int('min_samples_split', 2, 10),
                 'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2', None]),
                 'bootstrap': trial.suggest_categorical('bootstrap', [True, False]),
@@ -146,27 +144,27 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
             mdl = RandomForestClassifier(**params)
         elif model_name == 'XGBRegressor':
             params = {
-                'n_estimators': trial.suggest_int('n_estimators', 50, 200),
-                'max_depth': trial.suggest_int('max_depth', 3, 10),
+                'n_estimators': trial.suggest_int('n_estimators', 100, 1000),
+                'max_depth': trial.suggest_int('max_depth', 3, 15),
                 'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3),
                 'subsample': trial.suggest_float('subsample', 0.5, 1.0),
                 'colsample_bytree': trial.suggest_float('colsample_bytree', 0.5, 1.0),
-                'gamma': trial.suggest_float('gamma', 0, 5),
-                'reg_alpha': trial.suggest_float('reg_alpha', 0, 1),
-                'reg_lambda': trial.suggest_float('reg_lambda', 0, 1),
+                'gamma': trial.suggest_float('gamma', 0, 10),
+                'reg_alpha': trial.suggest_float('reg_alpha', 0, 10),
+                'reg_lambda': trial.suggest_float('reg_lambda', 0, 10),
                 'random_state': random_state
             }
             mdl = XGBRegressor(**params)
         elif model_name == 'XGBClassifier':
             params = {
-                'n_estimators': trial.suggest_int('n_estimators', 50, 200),
-                'max_depth': trial.suggest_int('max_depth', 3, 10),
+                'n_estimators': trial.suggest_int('n_estimators', 100, 1000),
+                'max_depth': trial.suggest_int('max_depth', 3, 15),
                 'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3),
                 'subsample': trial.suggest_float('subsample', 0.5, 1.0),
                 'colsample_bytree': trial.suggest_float('colsample_bytree', 0.5, 1.0),
-                'gamma': trial.suggest_float('gamma', 0, 5),
-                'reg_alpha': trial.suggest_float('reg_alpha', 0, 1),
-                'reg_lambda': trial.suggest_float('reg_lambda', 0, 1),
+                'gamma': trial.suggest_float('gamma', 0, 10),
+                'reg_alpha': trial.suggest_float('reg_alpha', 0, 10),
+                'reg_lambda': trial.suggest_float('reg_lambda', 0, 10),
                 'random_state': random_state
             }
             mdl = XGBClassifier(**params)
@@ -253,8 +251,8 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
             mdl = GaussianNB()
         elif model_name == 'CatBoostRegressor':
             params = {
-                'iterations': trial.suggest_int('iterations', 100, 1000),
-                'depth': trial.suggest_int('depth', 3, 10),
+                'iterations': trial.suggest_int('iterations', 300, 2000),
+                'depth': trial.suggest_int('depth', 4, 10),
                 'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3),
                 'l2_leaf_reg': trial.suggest_float('l2_leaf_reg', 1, 10),
                 'random_state': random_state,
@@ -263,8 +261,8 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
             mdl = CatBoostRegressor(**params)
         elif model_name == 'CatBoostClassifier':
             params = {
-                'iterations': trial.suggest_int('iterations', 100, 1000),
-                'depth': trial.suggest_int('depth', 3, 10),
+                'iterations': trial.suggest_int('iterations', 300, 2000),
+                'depth': trial.suggest_int('depth', 4, 10),
                 'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3),
                 'l2_leaf_reg': trial.suggest_float('l2_leaf_reg', 1, 10),
                 'random_state': random_state,
@@ -272,7 +270,7 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
             }
             mdl = CatBoostClassifier(**params)
         else:
-            raise ValueError(f"{model_name} için Optuna search space tanımlı değil.")
+            raise ValueError(f"{model_name} is not defined in Optuna search space.")
 
         if problem_type == 'regression':
             score = cross_val_score(mdl, X_train, y_train, scoring='r2', cv=3).mean()
@@ -284,7 +282,7 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
     study.optimize(objective, n_trials=n_trials)
     best_params = study.best_params
 
-    # En iyi parametrelerle modeli eğit
+    # Train the model with the best parameters
     if model_name == 'RandomForestRegressor':
         best_model = RandomForestRegressor(**best_params, random_state=random_state)
     elif model_name == 'RandomForestClassifier':
@@ -322,7 +320,7 @@ def hyperparameter_tuning(model_name, file_name, target_column, problem_type, n_
     elif model_name == 'CatBoostClassifier':
         best_model = CatBoostClassifier(**best_params, random_state=random_state, verbose=0)
     else:
-        raise ValueError(f"{model_name} için model oluşturulamadı.")
+        raise ValueError(f"{model_name} model could not be created.")
 
     best_model.fit(X_train, y_train)
     return best_model, best_params, study.best_value

@@ -51,6 +51,7 @@ Auto/
 │   ├── Calories.csv
 │   ├── Cost.csv
 │   ├── Digital.csv
+│   ├── Electricity.csv
 │   ├── ford.csv
 │   ├── Habits.csv
 │   ├── heart.csv
@@ -58,17 +59,24 @@ Auto/
 │   ├── Mobiles.csv
 │   ├── Personality.csv
 │   ├── Salaries.csv
-│   └── Sleep.csv
+│   ├── Shopper.csv
+│   ├── Sleep.csv
+│   ├── cat.csv
+│   ├── test.csv
+│   └── train.csv
 ├── tools/
 │   └── all_tools.py       # MCP tool definitions
 ├── utils/
-│   ├── before_model.py    # Feature preparation
-│   ├── details.py         # Data information
-│   ├── hyperparameter.py  # Hyperparameter tuning
-│   ├── model_selection.py # Model selection and evaluation
-│   ├── preprocessing.py   # Data preprocessing
-│   ├── read_csv_file.py   # CSV reading utilities
-│   └── visualize_data.py  # Visualization functions
+│   ├── before_model.py        # Feature preparation
+│   ├── details.py             # Data information
+│   ├── external_test.py       # External data test with XGBoost
+│   ├── feature_importance.py  # Feature importance analysis
+│   ├── hyperparameter.py      # Hyperparameter tuning
+│   ├── model_selection.py     # Model selection and evaluation
+│   ├── prediction.py          # Prediction utilities
+│   ├── preprocessing.py       # Data preprocessing
+│   ├── read_csv_file.py       # CSV reading utilities
+│   └── visualize_data.py      # Visualization functions
 ├── main.py                # Application entry point
 ├── server.py              # MCP server configuration
 ├── requirements.txt       # Python dependencies
@@ -87,8 +95,8 @@ Auto/
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/emircansoftware/MCP_Server_DataScience.git
-   cd MCP_Server_DataScience
+   git clone https://github.com/yourusername/auto-ml.git
+   cd auto-ml
    ```
 
 2. **Install dependencies**
@@ -96,15 +104,42 @@ Auto/
    ```bash
    # Using pip
    pip install -r requirements.txt
+   pip install uv
 
-   # Or using uv (recommended)
-   uv sync
    ```
 
-3. **Run the application**
-   ```bash
-   python main.py
-   ```
+## Using with Claude Desktop
+
+### 1. Data Path Setting
+
+In `utils/read_csv_file.py`, update the `path` variable to match your own project directory on your computer:
+
+```python
+# Example:
+path = r"C:\\YOUR\\PROJECT\\PATH\\Auto\\data"
+```
+
+### 2. Claude Desktop Configuration
+
+In Claude Desktop, add the following block to your `claude_desktop_config.json` file and adjust the paths to match your own system:
+
+```json
+{
+  "mcpServers": {
+    "AutoML": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\YOUR\\PROJECT\\PATH\\Auto",
+        "run",
+        "main.py"
+      ]
+    }
+  }
+}
+```
+
+You can now start your project from Claude Desktop.
 
 ## 📋 Dependencies
 
@@ -130,24 +165,27 @@ The platform provides the following MCP tools:
 
 #### Data Analysis Tools
 
-- `information_about_data(file_name)`: Get comprehensive dataset information
-- `reading_csv(file_name)`: Read CSV files efficiently
-- `visualize_correlation_num(file_name)`: Visualize numerical correlations
-- `visualize_correlation_cat(file_name)`: Visualize categorical correlations
-- `visualize_correlation_final(file_name, target_column)`: Final correlation analysis
-- `visualize_outliers(file_name)`: Detect and visualize outliers
-- `visualize_outliers_final(file_name, target_column)`: Final outlier analysis
+- `information_about_data(file_name)`: Give detailed information about the data
+- `reading_csv(file_name)`: Read the csv file
+- `visualize_correlation_num(file_name)`: Visualize the correlation matrix for numerical columns
+- `visualize_correlation_cat(file_name)`: Visualize the correlation matrix for categorical columns
+- `visualize_correlation_final(file_name, target_column)`: Visualize the correlation matrix after preprocessing
+- `visualize_outliers(file_name)`: Visualize outliers in the data
+- `visualize_outliers_final(file_name, target_column)`: Visualize outliers after preprocessing
 
 #### Preprocessing Tools
 
-- `preprocessing_data(file_name, target_column)`: Automated data preprocessing
-- `prepare_data(file_name, target_column, problem_type)`: Feature preparation
+- `preprocessing_data(file_name, target_column)`: Preprocess the data (remove outliers, fill nulls, etc.)
+- `prepare_data(file_name, target_column, problem_type)`: Prepare the data for models (encoding, scaling, etc.)
 
 #### Model Training & Evaluation
 
-- `models(problem_type, file_name, target_column)`: Train and evaluate multiple models
-- `visualize_accuracy_matrix(file_name, target_column, problem_type)`: Confusion matrix visualization
-- `best_model_hyperparameter(model_name, file_name, target_column, problem_type, n_trials, scoring, random_state)`: Hyperparameter tuning
+- `models(problem_type, file_name, target_column)`: Select and evaluate models based on problem type
+- `visualize_accuracy_matrix(file_name, target_column, problem_type)`: Visualize the confusion matrix for predictions
+- `best_model_hyperparameter(model_name, file_name, target_column, problem_type, n_trials, scoring, random_state)`: Tune the hyperparameters of the best model
+- `test_external_data(main_file_name, target_column, problem_type, test_file_name)`: Test external data with the best model and return predictions
+- `predict_value(model_name, file_name, target_column, problem_type, n_trials, scoring, random_state, input)`: Predict the value of the target column for new input
+- `feature_importance_analysis(file_name, target_column, problem_type)`: Analyze the feature importance of the data using XGBoost
 
 ### Example Workflow
 
@@ -171,7 +209,7 @@ confusion_matrix = visualize_accuracy_matrix("data/heart.csv", "target", "classi
 best_model = best_model_hyperparameter("RandomForestClassifier", "data/heart.csv", "target", "classification", 100, "accuracy", 42)
 ```
 
-## 📊 Sample Datasets
+## 📊 Sample Datasets (All CSV datasets are from Kaggle.)
 
 The project includes various sample datasets for testing:
 
@@ -230,10 +268,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/emircansoftware/MCP_Server_DataScience/issues) page
+1. Check the [Issues](https://github.com/yourusername/auto-ml/issues) page
 2. Create a new issue with detailed information
 3. Contact the maintainers
 
 ---
 
-**Made with ❤️ for the ML community**
