@@ -45,7 +45,7 @@ An intelligent automated machine learning platform that provides comprehensive d
 ## 📁 Project Structure
 
 ```
-MCP_Server_DataScience/
+AutoML/
 ├── data/                   # Sample datasets
 │   ├── Ai.csv
 │   ├── Calories.csv
@@ -95,8 +95,8 @@ MCP_Server_DataScience/
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/emircansoftware/MCP_Server_DataScience.git
-   cd MCP_Server_DataScience
+   git clone https://github.com/emircansoftware/AutoML.git
+   cd AutoML
    ```
 
 2. **Install dependencies**
@@ -116,7 +116,7 @@ In `utils/read_csv_file.py`, update the `path` variable to match your own projec
 
 ```python
 # Example:
-path = r"C:\\YOUR\\PROJECT\\PATH\\MCP_Server_DataScience\\data"
+path = r"C:\\YOUR\\PROJECT\\PATH\\AutoML\\data"
 ```
 
 ### 2. Claude Desktop Configuration
@@ -130,7 +130,7 @@ In Claude Desktop, add the following block to your `claude_desktop_config.json` 
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\YOUR\\PROJECT\\PATH\\MCP_Server_DataScience",
+        "C:\\YOUR\\PROJECT\\PATH\\AutoML",
         "run",
         "main.py"
       ]
