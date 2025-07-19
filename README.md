@@ -26,7 +26,6 @@ An intelligent automated machine learning platform that provides comprehensive d
 - **Multiple Algorithms**: Support for various ML algorithms including:
   - **Regression**: Linear Regression, Ridge, Lasso, ElasticNet, Random Forest, XGBoost, SVR, KNN, CatBoost
   - **Classification**: Logistic Regression, Ridge Classifier, Random Forest, XGBoost, SVM, KNN, Decision Tree, Naive Bayes, CatBoost
-  - **Ensemble Methods**: Voting classifiers and regressors for improved performance
 
 ### 📈 Model Evaluation & Visualization
 
